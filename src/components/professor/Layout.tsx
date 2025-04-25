@@ -15,12 +15,6 @@ const ProfessorLayout: React.FC<LayoutProps> = ({ children }) => {
   const location = useLocation();
   const navigate = useNavigate();
 
-  console.log('ProfessorLayout rendering:', { 
-    pathname: location.pathname,
-    user,
-    theme
-  });
-
   const navItems = [{
     path: '/professor',
     icon: HomeIcon,
@@ -55,19 +49,19 @@ const ProfessorLayout: React.FC<LayoutProps> = ({ children }) => {
           {children}
         </main>
         <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
-          <div className="flex justify-between px-2">
+          <div className="grid grid-cols-6 w-full">
             {navItems.map(item => {
               const isActive = location.pathname === item.path;
               return (
                 <button
                   key={item.path}
-                  className={`flex flex-col items-center pt-2 pb-1 px-3 ${
+                  className={`flex flex-col items-center py-2 ${
                     isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'
                   }`}
                   onClick={() => navigate(item.path)}
                 >
-                  <item.icon size={20} />
-                  <span className="text-xs mt-1">{item.label}</span>
+                  <item.icon size={18} />
+                  <span className="text-[10px] mt-1">{item.label}</span>
                 </button>
               );
             })}
