@@ -2,18 +2,25 @@ import React from 'react';
 import { useNavigate, useLocation } from 'react-router-dom';
 import { HomeIcon, BookOpenIcon, UsersIcon, BellIcon, CalendarIcon, UserIcon } from 'lucide-react';
 import { useTheme } from '../../context/ThemeContext';
+import { useAuth } from '../../context/AuthContext';
 import Header from '../Header';
+
 interface LayoutProps {
   children: React.ReactNode;
 }
-const ProfessorLayout: React.FC<LayoutProps> = ({
-  children
-}) => {
-  const {
-    theme
-  } = useTheme();
+
+const ProfessorLayout: React.FC<LayoutProps> = ({ children }) => {
+  const { theme } = useTheme();
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
+
+  console.log('ProfessorLayout rendering:', { 
+    pathname: location.pathname,
+    user,
+    theme
+  });
+
   const navItems = [{
     path: '/professor',
     icon: HomeIcon,
@@ -39,22 +46,36 @@ const ProfessorLayout: React.FC<LayoutProps> = ({
     icon: UserIcon,
     label: 'Profile'
   }];
-  return <div className={`${theme === 'dark' ? 'dark' : ''} w-full min-h-screen bg-gray-50 dark:bg-gray-900`}>
+
+  return (
+    <div className={`${theme === 'dark' ? 'dark' : ''} w-full min-h-screen bg-gray-50 dark:bg-gray-900`}>
       <div className="max-w-md mx-auto h-screen flex flex-col">
         <Header />
-        <main className="flex-1 overflow-y-auto pb-16 px-4">{children}</main>
+        <main className="flex-1 overflow-y-auto pb-16 px-4">
+          {children}
+        </main>
         <nav className="fixed bottom-0 left-0 right-0 max-w-md mx-auto bg-white dark:bg-gray-800 border-t border-gray-200 dark:border-gray-700">
           <div className="flex justify-between px-2">
             {navItems.map(item => {
-            const isActive = location.pathname === item.path;
-            return <button key={item.path} className={`flex flex-col items-center pt-2 pb-1 px-3 ${isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'}`} onClick={() => navigate(item.path)}>
+              const isActive = location.pathname === item.path;
+              return (
+                <button
+                  key={item.path}
+                  className={`flex flex-col items-center pt-2 pb-1 px-3 ${
+                    isActive ? 'text-blue-600 dark:text-blue-400' : 'text-gray-600 dark:text-gray-400'
+                  }`}
+                  onClick={() => navigate(item.path)}
+                >
                   <item.icon size={20} />
                   <span className="text-xs mt-1">{item.label}</span>
-                </button>;
-          })}
+                </button>
+              );
+            })}
           </div>
         </nav>
       </div>
-    </div>;
+    </div>
+  );
 };
+
 export default ProfessorLayout;

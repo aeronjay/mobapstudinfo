@@ -2,14 +2,16 @@ import React from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import { ChevronLeftIcon, BellIcon, MoonIcon, SunIcon } from 'lucide-react';
 import { useTheme } from '../context/ThemeContext';
+import { useAuth } from '../context/AuthContext';
+
 const Header: React.FC = () => {
-  const {
-    theme,
-    toggleTheme
-  } = useTheme();
+  const { theme, toggleTheme } = useTheme();
+  const { user } = useAuth();
   const location = useLocation();
   const navigate = useNavigate();
-  const isHomePage = location.pathname === '/';
+  const isHomePage = (user?.role === 'student' && location.pathname === '/') || 
+                    (user?.role === 'professor' && location.pathname === '/professor');
+
   const getPageTitle = () => {
     switch (location.pathname) {
       case '/':
@@ -30,10 +32,24 @@ const Header: React.FC = () => {
         return 'Messages';
       case '/profile':
         return 'Profile';
+      // Professor routes
+      case '/professor':
+        return 'Professor Dashboard';
+      case '/professor/classes':
+        return 'Manage Classes';
+      case '/professor/students':
+        return 'Students';
+      case '/professor/announcements':
+        return 'Announcements';
+      case '/professor/schedule':
+        return 'Schedule';
+      case '/professor/profile':
+        return 'Profile';
       default:
         return 'Student App';
     }
   };
+
   return <header className="sticky top-0 z-10 bg-white dark:bg-gray-800 shadow-sm">
       <div className="flex items-center justify-between h-16 px-4">
         <div className="flex items-center">

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, createContext, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockLogin, mockLogout, checkAuth, UserRole, User } from '../utils/authUtils';
+import { mockLogin, mockLogout, checkAuth, UserRole, User, mockUsers } from '../utils/authUtils';
 interface AuthContextType {
   isAuthenticated: boolean;
   user: User | null;
@@ -40,7 +40,12 @@ export const AuthProvider: React.FC<{
     if (success && user) {
       setIsAuthenticated(true);
       setUser(user);
-      navigate(user.role === 'professor' ? '/professor' : '/');
+      // Ensure we always navigate to the correct route
+      if (user.role === 'professor') {
+        navigate('/professor');
+      } else {
+        navigate('/');
+      }
     }
     setIsLoading(false);
     return success;

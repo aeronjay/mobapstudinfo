@@ -1,10 +1,19 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { BookOpenIcon, UsersIcon, BellIcon, CalendarIcon } from 'lucide-react';
+import { BookOpenIcon, UsersIcon } from 'lucide-react';
 import { professorClasses, enrolledStudents, announcements } from '../../utils/professorMockData';
+import { useAuth } from '../../context/AuthContext';
 
 const ProfessorDashboard: React.FC = () => {
   const navigate = useNavigate();
+  const { user } = useAuth();
+  
+  console.log('ProfessorDashboard rendering:', { 
+    user,
+    professorClasses,
+    enrolledStudents,
+    announcements 
+  });
   
   // Get total number of students across all classes
   const totalStudents = Object.values(enrolledStudents).reduce(

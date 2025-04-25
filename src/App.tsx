@@ -1,5 +1,5 @@
 import React from 'react';
-import { HashRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
+import { HashRouter as Router, Routes, Route, Navigate, useLocation } from 'react-router-dom';
 import { ThemeProvider } from './context/ThemeContext';
 import { AuthProvider } from './context/AuthContext';
 import Layout from './components/Layout';
@@ -33,6 +33,14 @@ import { useAuth } from './context/AuthContext';
 
 const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { isAuthenticated, isLoading, user } = useAuth();
+  const location = useLocation();
+
+  console.log('ProtectedRoute:', {
+    isAuthenticated,
+    isLoading,
+    user,
+    pathname: location.pathname
+  });
 
   if (isLoading) {
     return <div>Loading...</div>;
@@ -42,11 +50,11 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
     return <Navigate to="/welcome" replace />;
   }
 
-  // Redirect professors to professor dashboard and students to student dashboard
-  if (user?.role === 'professor' && window.location.pathname === '/') {
+  // Update path checks to use location.pathname
+  if (user?.role === 'professor' && location.pathname === '/') {
     return <Navigate to="/professor" replace />;
   }
-  if (user?.role === 'student' && window.location.pathname.startsWith('/professor')) {
+  if (user?.role === 'student' && location.pathname.startsWith('/professor')) {
     return <Navigate to="/" replace />;
   }
 
@@ -96,7 +104,8 @@ export function App() {
             <Route path="/professor/announcements" element={<ProtectedRoute><ProfessorLayout><ProfessorAnnouncements /></ProfessorLayout></ProtectedRoute>} />
             <Route path="/professor/schedule" element={<ProtectedRoute><ProfessorLayout><ProfessorSchedule /></ProfessorLayout></ProtectedRoute>} />
             <Route path="/professor/profile" element={<ProtectedRoute><ProfessorLayout><ProfessorProfile /></ProfessorLayout></ProtectedRoute>} />
-
+            
+            {/* Fallback route */}
             <Route path="*" element={<Navigate to="/welcome" replace />} />
           </Routes>
         </AuthProvider>
